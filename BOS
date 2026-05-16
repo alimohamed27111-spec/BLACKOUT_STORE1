@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BLACK OUT — Premium Streetwear</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital@1&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --black: #080808;
+    --charcoal: #141414;
+    --dark: #1c1c1c;
+    --mid: #2a2a2a;
+    --border: #333;
+    --accent: #c8a96e;
+    --accent-light: #e8c98e;
+    --white: #f5f5f5;
+    --muted: #888;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+  }
+  #loader {
+    position:fixed; inset:0; background:var(--black);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    z-index:9999; transition: opacity 0.6s ease;
+  }
+  #loader .loader-brand {
+    font-family:'Bebas Neue', sans-serif;
+    font-size:clamp(3rem,10vw,7rem);
+    letter-spacing:0.2em;
+    color:var(--white);
+    animation: fadeInUp 0.8s ease forwards;
+  }
+  #loader .loader-bar {
+    width:200px; height:1px;
+    background:var(--border);
+    margin-top:2rem; overflow:hidden;
+  }
+  #loader .loader-progress {
+    height:100%; width:0;
+    background:var(--accent);
+    animation: loadProgress 1.8s ease forwards;
+  }
+  @keyframes loadProgress { to { width:100%; } }
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes slideInLeft { from { transform:translateX(-100%); } to { transform:translateX(0); } }
+  @keyframes toastIn { from { transform:translateY(100px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+  @keyframes toastOut { from { transform:translateY(0); opacity:1; } to { transform:translateY(100px); opacity:0; } }
+  @keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } }
+
+  .reveal { opacity:0; transform:translateY(40px); transition:opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  #header {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    background:rgba(8,8,8,0.95);
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);
+    transition:all 0.3s ease;
+  }
+  #header.scrolled { background:rgba(8,8,8,0.98); }
+  .nav-link {
+    font-size:0.75rem; font-weight:600; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--muted);
+    transition:color 0.3s ease; cursor:pointer; padding:0.25rem 0;
+    position:relative;
+  }
+  .nav-link::after {
+    content:''; position:absolute; bottom:-2px; left:0; right:0;
+    height:1px; background:var(--accent); transform:scaleX(0);
+    transition:transform 0.3s ease;
+  }
+  .nav-link:hover { color:var(--white); }
+  .nav-link:hover::after { transform:scaleX(1); }
+
+  .cart-badge {
+    position:absolute; top:-8px; right:-10px;
+    background:var(--accent); color:var(--black);
+    font-size:0.65rem; font-weight:700;
+    width:18px; height:18px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    animation: pulse 2s infinite;
+  }
+
+  #hero {
+    min-height:100vh; position:relative;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    background: linear-gradient(135deg, #080808 0%, #141414 50%, #1a1209 100%);
+  }
+  #hero::before {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(ellipse at 30% 60%, rgba(200,169,110,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 20%, rgba(200,169,110,0.05) 0%, transparent 50%);
+  }
+  .hero-grid {
+    position:absolute; inset:0; opacity:0.04;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size:60px 60px;
+  }
+  .hero-title {
+    font-family:'Bebas Neue', sans-serif;
+    font-size:clamp(5rem,18vw,16rem);
+    line-height:0.85; letter-spacing:0.05em;
+    color:var(--white);
+    position:relative;
+  }
+  .hero-title span { color:var(--accent); }
+  .hero-subtitle {
+    font-size:clamp(0.65rem,1.5vw,0.85rem);
+    letter-spacing:0.4em; text-transform:uppercase;
+    color:var(--muted); font-weight:400;
+  }
+  .btn-primary {
+    background:var(--accent); color:var(--black);
+    font-size:0.7rem; font-weight:700; letter-spacing:0.2em;
+    text-transform:uppercase; padding:1rem 2.5rem;
+    border:none; cursor:pointer;
+    transition:all 0.3s ease; position:relative; overflow:hidden;
+  }
+  .btn-primary::before {
+    content:''; position:absolute; inset:0;
+    background:var(--white); transform:translateX(-100%);
+    transition:transform 0.3s ease;
+  }
+  .btn-primary:hover::before { transform:translateX(0); }
+  .btn-primary span { position:relative; z-index:1; }
+  .btn-primary:hover { color:var(--black); }
+  .btn-outline {
+    background:transparent; color:var(--white);
+    font-size:0.7rem; font-weight:600; letter-spacing:0.15em;
+    text-transform:uppercase; padding:0.75rem 2rem;
+    border:1px solid var(--border); cursor:pointer;
+    transition:all 0.3s ease;
+  }
+  .btn-outline:hover { border-color:var(--accent); color:var(--accent); }
+
+  .category-card {
+    position:relative; overflow:hidden; cursor:pointer;
+    aspect-ratio:3/4; background:var(--dark);
+    transition:transform 0.4s ease;
+  }
+  .category-card:hover { transform:translateY(-4px); }
+  .category-card img { width:100%; height:100%; object-fit:cover; transition:transform 0.6s ease; }
+  .category-card:hover img { transform:scale(1.05); }
+  .category-card-overlay {
+    position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(8,8,8,0.9) 0%, rgba(8,8,8,0.2) 50%, transparent 100%);
+  }
+  .category-card-label { position:absolute; bottom:0; left:0; right:0; padding:1.5rem; }
+  .category-card-title { font-family:'Bebas Neue', sans-serif; font-size:2rem; letter-spacing:0.1em; }
+
+  .product-card {
+    background:var(--charcoal);
+    border:1px solid var(--border);
+    transition:all 0.4s ease; overflow:hidden;
+    position:relative;
+  }
+  .product-card:hover { border-color:var(--accent); transform:translateY(-6px); box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+  .product-img-wrap { position:relative; overflow:hidden; aspect-ratio:3/4; background:var(--dark); }
+  .product-img { width:100%; height:100%; object-fit:cover; transition:opacity 0.5s ease, transform 0.6s ease; position:absolute; inset:0; }
+  .product-img.secondary { opacity:0; }
+  .product-img.secondary { transform:scale(1.03); transition:opacity 0.5s ease; }
+  .product-badge {
+    position:absolute; top:12px; left:12px;
+    background:var(--accent); color:var(--black);
+    font-size:0.6rem; font-weight:700; letter-spacing:0.1em;
+    text-transform:uppercase; padding:0.25rem 0.6rem;
+  }
+  .product-info { padding:1.25rem; }
+  .product-name { font-size:0.85rem; font-weight:600; letter-spacing:0.05em; margin-bottom:0.5rem; }
+  .product-price { font-family:'Bebas Neue', sans-serif; font-size:1.4rem; color:var(--accent); letter-spacing:0.05em; }
+  .product-price-egp { font-size:0.65rem; color:var(--muted); font-weight:500; }
+  .size-btn {
+    font-size:0.65rem; font-weight:600; padding:0.35rem 0.5rem;
+    border:1px solid var(--border); background:transparent;
+    color:var(--muted); cursor:pointer; transition:all 0.2s ease;
+    min-width:36px; text-align:center;
+  }
+  .size-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .size-btn.selected { background:var(--accent); color:var(--black); border-color:var(--accent); }
+  .add-cart-btn {
+    width:100%; padding:0.85rem; margin-top:1rem;
+    background:var(--mid); color:var(--white);
+    font-size:0.7rem; font-weight:700; letter-spacing:0.15em;
+    text-transform:uppercase; border:none; cursor:pointer;
+    transition:all 0.3s ease;
+  }
+  .add-cart-btn:hover { background:var(--accent); color:var(--black); }
+
+  /* Products transition */
+  #products-grid {
+    transition: opacity 0.3s ease;
+  }
+  #products-grid.fading {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Section title transition */
+  #products-section-title {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  #products-section-title.fading {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  #cart-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.7);
+    z-index:2000; opacity:0; pointer-events:none;
+    transition:opacity 0.3s ease; backdrop-filter:blur(4px);
+  }
+  #cart-overlay.open { opacity:1; pointer-events:all; }
+  #cart-drawer {
+    position:fixed; top:0; right:0; bottom:0;
+    width:min(420px, 100vw);
+    background:var(--charcoal);
+    border-left:1px solid var(--border);
+    z-index:2001;
+    transform:translateX(100%);
+    transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  #cart-drawer.open { transform:translateX(0); }
+  .cart-header { padding:1.5rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .cart-items { flex:1; overflow-y:auto; padding:1rem; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+  .cart-item { display:flex; gap:1rem; padding:1rem 0; border-bottom:1px solid var(--border); }
+  .cart-item-img { width:72px; height:90px; object-fit:cover; background:var(--dark); flex-shrink:0; }
+  .cart-item-name { font-size:0.8rem; font-weight:600; margin-bottom:0.25rem; }
+  .cart-item-size { font-size:0.7rem; color:var(--muted); margin-bottom:0.5rem; }
+  .cart-item-price { font-family:'Bebas Neue', sans-serif; font-size:1.1rem; color:var(--accent); }
+  .qty-btn { width:28px; height:28px; background:var(--mid); border:none; color:var(--white); cursor:pointer; font-size:1rem; transition:background 0.2s; }
+  .qty-btn:hover { background:var(--accent); color:var(--black); }
+  .qty-display { width:32px; text-align:center; font-size:0.85rem; font-weight:600; }
+  .cart-footer { padding:1.5rem; border-top:1px solid var(--border); background:var(--dark); }
+  .total-row { display:flex; justify-content:space-between; font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem; }
+  .grand-total { display:flex; justify-content:space-between; font-family:'Bebas Neue', sans-serif; font-size:1.6rem; color:var(--white); margin:1rem 0; }
+  .grand-total span:last-child { color:var(--accent); }
+  .empty-cart { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:1rem; color:var(--muted); }
+  .empty-cart svg { opacity:0.3; }
+  .empty-cart p { font-size:0.85rem; letter-spacing:0.05em; }
+
+  #checkout { background:var(--charcoal); border-top:1px solid var(--border); }
+  .input-field {
+    width:100%; background:var(--dark); border:1px solid var(--border);
+    color:var(--white); padding:0.9rem 1rem; font-size:0.85rem;
+    font-family:'Montserrat', sans-serif;
+    transition:border-color 0.3s ease; outline:none;
+  }
+  .input-field:focus { border-color:var(--accent); }
+  .input-field::placeholder { color:var(--muted); }
+  label.form-label { font-size:0.7rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:0.5rem; }
+  .payment-block {
+    background:var(--dark); border:1px solid var(--accent);
+    padding:1.5rem; text-align:center; border-left-width:4px;
+  }
+  .payment-block p { font-size:0.9rem; line-height:1.8; color:var(--white); direction:rtl; }
+  .payment-block strong { color:var(--accent); font-size:1.1rem; }
+  .file-upload-area {
+    border:2px dashed var(--border); padding:2rem;
+    text-align:center; cursor:pointer;
+    transition:border-color 0.3s ease, background 0.3s ease; position:relative;
+  }
+  .file-upload-area:hover { border-color:var(--accent); }
+  .file-upload-area input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+  .file-preview-wrap {
+    margin-top:1rem; display:none;
+    flex-direction:column; align-items:center; gap:0.75rem;
+  }
+  .file-preview-wrap.visible { display:flex; }
+  .file-preview-img {
+    max-width:200px; max-height:200px; object-fit:contain;
+    border:1px solid var(--accent); padding:4px;
+  }
+  .file-preview-name {
+    font-size:0.75rem; color:var(--accent); font-weight:600;
+  }
+
+  #modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.8);
+    z-index:9000; display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity 0.3s ease;
+    backdrop-filter:blur(8px);
+  }
+  #modal-overlay.open { opacity:1; pointer-events:all; }
+  #modal-box {
+    background:var(--charcoal); border:1px solid var(--accent);
+    max-width:480px; width:90%; padding:2.5rem;
+    transform:translateY(30px); transition:transform 0.4s ease;
+  }
+  #modal-overlay.open #modal-box { transform:translateY(0); }
+  #modal-box p { direction:rtl; line-height:1.9; font-size:0.95rem; color:var(--white); }
+  #modal-box strong { color:var(--accent); }
+
+  #toast-container { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:0.5rem; align-items:center; pointer-events:none; }
+  .toast {
+    background:var(--dark); border:1px solid var(--border);
+    color:var(--white); padding:0.85rem 1.5rem;
+    font-size:0.8rem; font-weight:500; letter-spacing:0.05em;
+    animation: toastIn 0.4s ease forwards;
+    white-space:nowrap; max-width:90vw;
+  }
+  .toast.error { border-color:#ef4444; color:#ef4444; }
+  .toast.success { border-color:var(--accent); color:var(--accent); }
+  .toast.hiding { animation: toastOut 0.4s ease forwards; }
+
+  #mobile-menu {
+    position:fixed; top:0; left:0; right:0; bottom:0;
+    background:var(--black); z-index:1500;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:2rem;
+    transform:translateX(-100%);
+    transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  #mobile-menu.open { transform:translateX(0); }
+  .mobile-nav-link {
+    font-family:'Bebas Neue', sans-serif;
+    font-size:3rem; letter-spacing:0.1em;
+    color:var(--muted); transition:color 0.3s ease; cursor:pointer;
+  }
+  .mobile-nav-link:hover { color:var(--accent); }
+
+  /* Size Guide — image only */
+  #size-guide { background:var(--dark); }
+  .size-guide-container {
+    max-width:700px; margin:0 auto; text-align:center;
+  }
+  .size-guide-img-wrap {
+    position:relative; overflow:hidden;
+    border:1px solid var(--border);
+    background:var(--charcoal);
+  }
+  .size-guide-img-wrap img {
+    width:100%; display:block;
+    transition:transform 0.6s ease;
+  }
+  .size-guide-img-wrap:hover img { transform:scale(1.02); }
+
+  .section-label { font-size:0.7rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--accent); margin-bottom:0.75rem; }
+  .section-title { font-family:'Bebas Neue', sans-serif; font-size:clamp(2.5rem,6vw,5rem); letter-spacing:0.05em; line-height:1; }
+
+  footer { background:var(--black); border-top:1px solid var(--border); }
+  .social-icon { width:40px; height:40px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; transition:all 0.3s ease; cursor:pointer; }
+  .social-icon:hover { border-color:var(--accent); color:var(--accent); }
+
+  ::-webkit-scrollbar { width:4px; }
+  ::-webkit-scrollbar-track { background:var(--black); }
+  ::-webkit-scrollbar-thumb { background:var(--border); }
+
+  .filter-btn { font-size:0.7rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; padding:0.5rem 1.25rem; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s ease; }
+  .filter-btn:hover, .filter-btn.active { background:var(--accent); color:var(--black); border-color:var(--accent); }
+
+  #floating-cart {
+    position:fixed; bottom:2rem; right:2rem; z-index:500;
+    background:var(--accent); color:var(--black);
+    width:56px; height:56px; border-radius:0;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; border:none;
+    box-shadow:0 8px 30px rgba(200,169,110,0.4);
+    transition:all 0.3s ease;
+  }
+  #floating-cart:hover { transform:scale(1.1); background:var(--accent-light); }
+  #floating-cart .fc-badge {
+    position:absolute; top:-6px; right:-6px;
+    background:var(--black); color:var(--accent);
+    width:20px; height:20px; border-radius:50%;
+    font-size:0.65rem; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* Mobile responsiveness improvements */
+  @media (max-width: 640px) {
+    .btn-primary, .btn-outline { padding:0.85rem 1.5rem; }
+    .product-info { padding:1rem; }
+    #cart-drawer { width:100vw; }
+    .size-btn { min-width:32px; padding:0.3rem 0.4rem; font-size:0.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loader">
+  <div class="loader-brand">BLACK OUT</div>
+  <div style="font-size:0.65rem;letter-spacing:0.4em;color:var(--muted);margin-top:0.75rem;text-transform:uppercase;">Premium Streetwear</div>
+  <div class="loader-bar"><div class="loader-progress"></div></div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div id="modal-box">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.1em;margin-bottom:1.25rem;color:var(--accent)">تأكيد الطلب</div>
+    <p id="modal-content"></p>
+    <div style="display:flex;gap:1rem;margin-top:2rem;">
+      <button id="modal-ok" class="btn-primary" style="flex:1;"><span>موافق — فتح واتساب</span></button>
+      <button id="modal-cancel" class="btn-outline" style="flex:0 0 auto;" onclick="closeModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE MENU -->
+<div id="mobile-menu">
+  <button style="position:absolute;top:1.5rem;right:1.5rem;background:none;border:none;color:var(--white);font-size:1.5rem;cursor:pointer;" onclick="toggleMenu()">✕</button>
+  <div class="mobile-nav-link" onclick="filterProducts('all');toggleMenu();scrollTo('#products')">All</div>
+  <div class="mobile-nav-link" onclick="filterProducts('pants');toggleMenu();scrollTo('#products')">Pants</div>
+  <div class="mobile-nav-link" onclick="filterProducts('shorts');toggleMenu();scrollTo('#products')">Shorts</div>
+  <div class="mobile-nav-link" onclick="filterProducts('suits');toggleMenu();scrollTo('#products')">Suits</div>
+  <div class="mobile-nav-link" onclick="filterProducts('tshirts');toggleMenu();scrollTo('#products')">T-Shirts</div>
+  <div class="mobile-nav-link" onclick="openCart();toggleMenu()">Cart</div>
+</div>
+
+<!-- HEADER -->
+<header id="header">
+  <div style="max-width:1400px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:70px;">
+    <div style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;" onclick="scrollTo('#hero')">
+      <div style="width:36px;height:36px;background:var(--accent);display:flex;align-items:center;justify-content:center;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="black"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.1em;color:var(--white);">BLACK OUT</span>
+    </div>
+    <nav style="display:flex;gap:2rem;align-items:center;" class="hidden md:flex">
+      <span class="nav-link" onclick="filterProducts('pants');scrollTo('#products')">Pants</span>
+      <span class="nav-link" onclick="filterProducts('shorts');scrollTo('#products')">Shorts</span>
+      <span class="nav-link" onclick="filterProducts('suits');scrollTo('#products')">Suits</span>
+      <span class="nav-link" onclick="filterProducts('tshirts');scrollTo('#products')">T-Shirts</span>
+      <span class="nav-link" onclick="scrollTo('#size-guide')">Size Guide</span>
+      <button onclick="openCart()" style="position:relative;background:none;border:none;cursor:pointer;color:var(--white);display:flex;align-items:center;gap:0.5rem;" class="nav-link">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        Cart
+        <span class="cart-badge" id="cart-badge">0</span>
+      </button>
+    </nav>
+    <button class="md:hidden" onclick="toggleMenu()" style="background:none;border:none;color:var(--white);cursor:pointer;">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div style="position:relative;z-index:2;text-align:center;padding:8rem 1.5rem 4rem;">
+    <div class="section-label" style="animation:fadeIn 1s 0.5s both;">Est. 2024 — Cairo, Egypt</div>
+    <h1 class="hero-title" style="animation:fadeInUp 1s 0.6s both;">BLACK<br/><span>OUT</span></h1>
+    <p class="hero-subtitle" style="animation:fadeIn 1s 1s both;margin:2rem 0 2.5rem;">Premium Streetwear Collection</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeInUp 1s 1.2s both;">
+      <button class="btn-primary" onclick="scrollTo('#products')"><span>Shop Now</span></button>
+      <button class="btn-outline" onclick="scrollTo('#categories')">Explore Looks</button>
+    </div>
+    <div style="position:absolute;bottom:3rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;animation:fadeIn 2s 2s both;">
+      <div style="font-size:0.6rem;letter-spacing:0.3em;color:var(--muted);text-transform:uppercase;">Scroll</div>
+      <div style="width:1px;height:40px;background:linear-gradient(to bottom, var(--accent), transparent);animation:pulse 2s infinite;"></div>
+    </div>
+  </div>
+</section>
+<!-- CATEGORIES -->
+<section id="categories" style="padding:6rem 1.5rem;max-width:1400px;margin:0 auto;">
+  <div class="reveal" style="margin-bottom:3rem;">
+    <div class="section-label">Collections</div>
+    <h2 class="section-title">Shop By Category</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--border);">
+    <div class="category-card reveal" onclick="filterProducts('pants');scrollTo('#products')">
+      <img src="https://i.ibb.co/dTRm3W3/IMG-5732.jpg" alt="Pants" loading="lazy"/>
+      <div class="category-card-overlay"></div>
+      <div class="category-card-label">
+        <div style="font-size:0.65rem;letter-spacing:0.3em;color:var(--accent);text-transform:uppercase;margin-bottom:0.25rem;">Collection</div>
+        <div class="category-card-title">Pants</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:0.25rem;">البناطيل</div>
+      </div>
+    </div>
+    <div class="category-card reveal" onclick="filterProducts('shorts');scrollTo('#products')">
+      <img src="https://i.ibb.co/DhGB1rD/IMG-5734.jpg" alt="Shorts" loading="lazy"/>
+      <div class="category-card-overlay"></div>
+      <div class="category-card-label">
+        <div style="font-size:0.65rem;letter-spacing:0.3em;color:var(--accent);text-transform:uppercase;margin-bottom:0.25rem;">Collection</div>
+        <div class="category-card-title">Shorts</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:0.25rem;">الشورتات</div>
+      </div>
+    </div>
+    <div class="category-card reveal" onclick="filterProducts('suits');scrollTo('#products')">
+      <img src="https://i.ibb.co/svCDXqCm/IMG-5735.jpg" alt="Suits" loading="lazy"/>
+      <div class="category-card-overlay"></div>
+      <div class="category-card-label">
+        <div style="font-size:0.65rem;letter-spacing:0.3em;color:var(--accent);text-transform:uppercase;margin-bottom:0.25rem;">Collection</div>
+        <div class="category-card-title">Suits</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:0.25rem;">البدل</div>
+      </div>
+    </div>
+    <div class="category-card reveal" onclick="filterProducts('tshirts');scrollTo('#products')">
+      <img src="https://i.ibb.co/pr1HDncW/IMG-5733.jpg" alt="T-Shirts" loading="lazy"/>
+      <div class="category-card-overlay"></div>
+      <div class="category-card-label">
+        <div style="font-size:0.65rem;letter-spacing:0.3em;color:var(--accent);text-transform:uppercase;margin-bottom:0.25rem;">Collection</div>
+        <div class="category-card-title">T-Shirts</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:0.25rem;">التيشرتات</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products" style="padding:4rem 1.5rem 6rem;background:var(--charcoal);">
+  <div style="max-width:1400px;margin:0 auto;">
+    <div class="reveal" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1.5rem;margin-bottom:2.5rem;">
+      <div>
+        <div class="section-label">Our Products</div>
+        <h2 class="section-title" id="products-section-title">Latest Drops</h2>
+      </div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;" id="filter-btns">
+        <button class="filter-btn active" onclick="filterProducts('all')" data-cat="all">All</button>
+        <button class="filter-btn" onclick="filterProducts('pants')" data-cat="pants">Pants</button>
+        <button class="filter-btn" onclick="filterProducts('shorts')" data-cat="shorts">Shorts</button>
+        <button class="filter-btn" onclick="filterProducts('suits')" data-cat="suits">Suits</button>
+        <button class="filter-btn" onclick="filterProducts('tshirts')" data-cat="tshirts">T-Shirts</button>
+      </div>
+    </div>
+    <div id="products-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1px;background:var(--border);"></div>
+  </div>
+</section>
+
+<!-- CART OVERLAY & DRAWER -->
+<div id="cart-overlay" onclick="closeCart()"></div>
+<div id="cart-drawer">
+  <div class="cart-header">
+    <div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.1em;">Your Cart</div>
+      <div style="font-size:0.7rem;color:var(--muted);" id="cart-item-count">0 items</div>
+    </div>
+    <button onclick="closeCart()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.25rem;">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items-list"></div>
+  <div class="cart-footer" id="cart-footer">
+    <div class="total-row"><span>Subtotal</span><span id="cart-subtotal">0 EGP</span></div>
+    <div class="total-row"><span>Shipping</span><span>100 EGP</span></div>
+    <div class="grand-total"><span>Total</span><span id="cart-grand-total">100 EGP</span></div>
+    <button class="btn-primary" style="width:100%;" onclick="closeCart();scrollTo('#checkout')"><span>Proceed to Checkout →</span></button>
+  </div>
+</div>
+
+<!-- FLOATING CART -->
+<button id="floating-cart" onclick="openCart()">
+  <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+  <span class="fc-badge" id="fc-badge">0</span>
+</button>
+
+<!-- CHECKOUT -->
+<section id="checkout" style="padding:6rem 1.5rem;">
+  <div style="max-width:900px;margin:0 auto;">
+    <div class="reveal" style="margin-bottom:3rem;">
+      <div class="section-label">Complete Your Order</div>
+      <h2 class="section-title">Checkout</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr;gap:2rem;">
+      <div class="reveal">
+        <h3 style="font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border);">01 — Customer Information</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;">
+          <div>
+            <label class="form-label" for="full-name">Full Name *</label>
+            <input class="input-field" id="full-name" type="text" placeholder="Your full name"/>
+          </div>
+          <div>
+            <label class="form-label" for="phone">Phone Number *</label>
+            <input class="input-field" id="phone" type="tel" placeholder="01xxxxxxxxx"/>
+          </div>
+        </div>
+        <div style="margin-top:1rem;">
+          <label class="form-label" for="address">Detailed Address *</label>
+          <textarea class="input-field" id="address" rows="3" placeholder="Street, building, floor, apartment..."></textarea>
+        </div>
+      </div>
+      <div class="reveal">
+        <h3 style="font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border);">02 — Payment</h3>
+        <div class="payment-block">
+          <div style="font-size:0.65rem;letter-spacing:0.3em;color:var(--accent);text-transform:uppercase;margin-bottom:1rem;">Transfer Details</div>
+          <p>لإتمام الطلب، برجاء تحويل المبلغ الإجمالي على محفظة رقم:<br/>
+          <strong>01147477039</strong><br/>
+          وارفق صورة التحويل أدناه</p>
+        </div>
+        <div style="margin-top:1.5rem;">
+          <label class="form-label" for="deposit-number">Deposit Transfer Number *</label>
+          <input class="input-field" id="deposit-number" type="tel" placeholder="The number you transferred from"/>
+        </div>
+        <div style="margin-top:1.25rem;">
+          <label class="form-label">Deposit Screenshot *</label>
+          <div class="file-upload-area" id="upload-area">
+            <input type="file" id="screenshot-upload" accept="image/*" onchange="handleFileUpload(event)"/>
+            <svg width="40" height="40" fill="none" stroke="var(--muted)" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 1rem;display:block;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+            <div style="font-size:0.8rem;color:var(--muted);">Drop image here or click to browse</div>
+            <div style="font-size:0.65rem;color:var(--border);margin-top:0.5rem;">PNG, JPG, JPEG accepted</div>
+          </div>
+          <div class="file-preview-wrap" id="file-preview-wrap">
+            <img id="file-preview-img" class="file-preview-img" src="" alt="Deposit Screenshot Preview"/>
+            <div id="file-preview-name" class="file-preview-name"></div>
+            <div style="font-size:0.65rem;color:var(--muted);">Screenshot ready — remember to attach it in WhatsApp chat</div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal" id="order-summary-box" style="background:var(--dark);padding:1.5rem;border:1px solid var(--border);">
+        <h3 style="font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border);">03 — Order Summary</h3>
+        <div id="order-summary-items" style="margin-bottom:1.5rem;"></div>
+        <div style="border-top:1px solid var(--border);padding-top:1rem;">
+          <div class="total-row"><span>Subtotal</span><span id="co-subtotal">0 EGP</span></div>
+          <div class="total-row"><span>Shipping</span><span>100 EGP</span></div>
+          <div style="display:flex;justify-content:space-between;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;margin-top:0.75rem;"><span>Grand Total</span><span style="color:var(--accent);" id="co-grand-total">100 EGP</span></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <button class="btn-primary" style="width:100%;padding:1.25rem;font-size:0.8rem;" onclick="placeOrder()">
+          <span>Place Order via WhatsApp →</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIZE GUIDE — image only -->
+<section id="size-guide" style="padding:6rem 1.5rem;background:var(--dark);">
+  <div class="size-guide-container">
+    <div class="reveal" style="margin-bottom:3rem;text-align:center;">
+      <div class="section-label">Measurements</div>
+      <h2 class="section-title">Size Guide</h2>
+      <p style="font-size:0.9rem;color:var(--muted);margin-top:1rem;letter-spacing:0.05em;">Choose your perfect fit</p>
+    </div>
+    <div class="reveal size-guide-img-wrap">
+      <img
+        src="https://i.ibb.co/HT0YRvHb/41-E89-FA6-6518-46-E0-AB14-CFFB6-B5930-E1.png"
+        alt="Size Guide — Choose your perfect fit"
+        loading="lazy"
+        onerror="this.src='https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=1200&q=90'"
+      />
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,8,0.55) 0%,transparent 60%);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.15em;color:var(--accent);">Find Your Perfect Size</div>
+        <div style="font-size:0.7rem;color:var(--white);letter-spacing:0.2em;opacity:0.8;margin-top:0.25rem;">WHEN IN DOUBT — SIZE UP</div>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:1.5rem;background:var(--charcoal);border:1px solid var(--border);padding:1.5rem;text-align:center;">
+      <div style="font-size:0.8rem;color:var(--muted);line-height:1.9;">
+        <strong style="color:var(--accent);">Fit Tip:</strong> If you're between sizes, we recommend sizing up for a relaxed streetwear fit or staying true to size for a tailored look. For suits, always go by chest measurement.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="padding:4rem 1.5rem 2rem;">
+  <div style="max-width:1400px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:3rem;margin-bottom:3rem;">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.1em;margin-bottom:1rem;">BLACK OUT</div>
+        <p style="font-size:0.8rem;color:var(--muted);line-height:1.8;max-width:280px;">Premium streetwear crafted for those who dare to stand out. Cairo's finest fashion label since 2024.</p>
+        <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
+          <div class="social-icon">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </div>
+          <div class="social-icon">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          </div>
+          <div class="social-icon">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/></svg>
+          </div>
+          <div class="social-icon" onclick="window.open('https://wa.me/201273144003','_blank')">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;">Collections</div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <span style="font-size:0.8rem;color:var(--muted);cursor:pointer;" onclick="filterProducts('pants');scrollTo('#products')">Pants — البناطيل</span>
+          <span style="font-size:0.8rem;color:var(--muted);cursor:pointer;" onclick="filterProducts('shorts');scrollTo('#products')">Shorts — الشورتات</span>
+          <span style="font-size:0.8rem;color:var(--muted);cursor:pointer;" onclick="filterProducts('suits');scrollTo('#products')">Suits — البدل</span>
+          <span style="font-size:0.8rem;color:var(--muted);cursor:pointer;" onclick="filterProducts('tshirts');scrollTo('#products')">T-Shirts — التيشرتات</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;">Help</div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <span style="font-size:0.8rem;color:var(--muted);cursor:pointer;" onclick="scrollTo('#size-guide')">Size Guide</span>
+          <span style="font-size:0.8rem;color:var(--muted);cursor:pointer;" onclick="scrollTo('#checkout')">How to Order</span>
+          <span style="font-size:0.8rem;color:var(--muted);">Returns within 7 days</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;">Contact Us</div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <svg width="14" height="14" fill="none" stroke="var(--accent)" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            <span style="font-size:0.8rem;color:var(--muted);">01273144003</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <svg width="14" height="14" fill="none" stroke="var(--accent)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+            <a href="https://wa.me/201273144003" target="_blank" style="font-size:0.8rem;color:var(--muted);text-decoration:none;">WhatsApp Support</a>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <svg width="14" height="14" fill="none" stroke="var(--accent)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span style="font-size:0.8rem;color:var(--muted);">Cairo, Egypt</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:2rem;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem;">
+      <div style="font-size:0.7rem;color:var(--border);">© 2024 BLACK OUT. All rights reserved.</div>
+      <div style="font-size:0.7rem;color:var(--border);">Premium Streetwear — Cairo, Egypt</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Products: 8 pants, 6 shorts, 6 suits, 4 tshirts = 24 total
+const products = [
+  // PANTS (8)
+  { id:1, name:"Blue AE cotton Pants", category:"pants", price:750, img1:"https://i.ibb.co/qLqDDVcd/IMG-0302.jpg" },
+  { id:2, name:"Black AE cotton Pants", category:"pants", price:750, img1:"https://i.ibb.co/C5RtrFGN/IMG-0290.jpg" },
+  { id:3, name:"White AE cotton Pants", category:"pants", price:750, img1:"https://i.ibb.co/zV29CzFf/IMG-0320.jpg" },
+  { id:4, name:"Grey cotton Pants", category:"pants", price:750, img1:"https://i.ibb.co/b56kZbnB/IMG-0281.jpg" },
+  { id:5, name:"Light Grey cotton Pants", category:"pants", price:650, img1:"https://i.ibb.co/0jrwxCxX/IMG-0156.jpg" },
+  { id:6, name:"Black cotton Pants", category:"pants", price:650, img1:"https://i.ibb.co/XxpKVdBK/IMG-0182.jpg" },
+  { id:7, name:"Baby Blue cotton Pants", category:"pants", price:650, img1:"https://i.ibb.co/KjLr8gVS/IMG-0212.jpg" },
+  { id:8, name:"Beige cotton Pants", category:"pants", price:650, img1:"https://i.ibb.co/spZHc3Lv/IMG-0189.jpg" },
+
+  // SHORTS (6)
+  { id:9, name:"Blue RHUDE Shorts", category:"shorts", price:750, img1:"https://i.ibb.co/yBfkPdxd/IMG-0229.jpg" },
+  { id:10, name:"Black Nike Tech Short", category:"shorts", price:600, img1:"https://i.ibb.co/MDr5sWmQ/IMG-5718.jpg" },
+  { id:11, name:"Beige Nike Tech Short", category:"shorts", price:600, img1:"https://i.ibb.co/HLzWghQW/IMG-5717.jpg" },
+  { id:12, name:"Grey Nike Tech Short", category:"shorts", price:600, img1:"https://i.ibb.co/zT4CWXTs/IMG-5727.jpg" },
+  { id:13, name:"Beige Fateh Nike Tech", category:"shorts", price:600, img1:"https://i.ibb.co/23DXDThR/IMG-5729.jpg" },
+  { id:14, name:"Meshagr Black Nike Tech", category:"shorts", price:600, img1:"https://i.ibb.co/rGm2WG7T/IMG-5728.jpg" },
+
+  // SUITS (6)
+  { id:15, name:"Black Cotton Nike Tech", category:"suits", price:1150, img1:"https://i.ibb.co/1fmy8s9K/IMG-0325.jpg" },
+  { id:16, name:"Pink Cotton Nike Tech", category:"suits", price:1150, img1:"https://i.ibb.co/7JTGcfHV/IMG-5713.jpg" },
+  { id:17, name:"Green Adidas Suit", category:"suits", price:1150, img1:"https://i.ibb.co/35hN7x9x/IMG-5721.jpg" },
+  { id:18, name:"Red Adidas Suit", category:"suits", price:1150, img1:"https://i.ibb.co/Zp1QdcBX/IMG-5720.jpg" },
+  { id:19, name:"Blue Adidas Suit", category:"suits", price:1150, img1:"https://i.ibb.co/W4yZ9kK5/IMG-5722.jpg" },
+  { id:20, name:"Red Nike Tech", category:"suits", price:980, img1:"https://i.ibb.co/MkSpf7c6/IMG-3511.jpg" },
+
+  // T-SHIRTS (4)
+  { id:21, name:"White Polo Shirt", category:"tshirts", price:680, img1:"https://i.ibb.co/G3T0Ld69/IMG-5726.jpg" },
+  { id:22, name:"Black Polo Shirt", category:"tshirts", price:680, img1:"https://i.ibb.co/mVvXGmDb/IMG-5723.jpg" },
+  { id:23, name:"Blue Polo Shirt", category:"tshirts", price:680, img1:"https://i.ibb.co/jvsgFvd9/IMG-5724.jpg" },
+  { id:24, name:"White Camo Tee", category:"tshirts", price:680, img1:"https://i.ibb.co/hJ7n1YyP/IMG-5730.jpg" }
+];
+const categoryTitles = {
+  all: 'Latest Drops',
+  pants: 'Pants Collection',
+  shorts: 'Shorts Collection',
+  suits: 'Suits Collection',
+  tshirts: 'T-Shirts Collection'
+};
+
+let cart = [];
+try { cart = JSON.parse(localStorage.getItem('bo_cart') || '[]'); } catch(e) { cart = []; }
+let selectedFile = null;
+const selectedSizes = {};
+
+function saveCart() { try { localStorage.setItem('bo_cart', JSON.stringify(cart)); } catch(e) {} }
+function getCartTotal() { return cart.reduce((s, i) => s + i.price * i.qty, 0); }
+
+function updateCartBadges() {
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  document.getElementById('cart-badge').textContent = count;
+  document.getElementById('fc-badge').textContent = count;
+  document.getElementById('cart-item-count').textContent = count + ' item' + (count !== 1 ? 's' : '');
+}
+
+function renderCart() {
+  const list = document.getElementById('cart-items-list');
+  const footer = document.getElementById('cart-footer');
+  if (cart.length === 0) {
+    list.innerHTML = `<div class="empty-cart">
+      <svg width="60" height="60" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <p>Your cart is empty</p>
+      <button class="btn-outline" onclick="closeCart()" style="font-size:0.7rem;">Continue Shopping</button>
+    </div>`;
+    footer.style.display = 'none';
+    return;
+  }
+  footer.style.display = 'block';
+  list.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <img class="cart-item-img" src="${item.img}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200&q=80'"/>
+      <div style="flex:1;min-width:0;">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-size">Size: ${item.size}</div>
+        <div class="cart-item-price">${(item.price * item.qty).toLocaleString()} EGP</div>
+        <div style="display:flex;align-items:center;gap:0.25rem;margin-top:0.5rem;">
+          <button class="qty-btn" onclick="changeQty(${item.id},'${item.size}',-1)">−</button>
+          <span class="qty-display">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${item.id},'${item.size}',1)">+</button>
+          <button onclick="removeItem(${item.id},'${item.size}')" style="margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.75rem;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--muted)'">Remove</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  const sub = getCartTotal();
+  document.getElementById('cart-subtotal').textContent = sub.toLocaleString() + ' EGP';
+  document.getElementById('cart-grand-total').textContent = (sub + 100).toLocaleString() + ' EGP';
+  renderOrderSummary();
+}
+
+function renderOrderSummary() {
+  const items = document.getElementById('order-summary-items');
+  const sub = getCartTotal();
+  if (items) {
+    items.innerHTML = cart.map(i => `
+      <div style="display:flex;justify-content:space-between;font-size:0.8rem;padding:0.5rem 0;border-bottom:1px solid var(--border);">
+        <span>${i.name} (${i.size}) x${i.qty}</span>
+        <span>${(i.price * i.qty).toLocaleString()} EGP</span>
+      </div>
+    `).join('') || '<div style="color:var(--muted);">No items</div>';
+    document.getElementById('co-subtotal').textContent = sub.toLocaleString() + ' EGP';
+    document.getElementById('co-grand-total').textContent = (sub + 100).toLocaleString() + ' EGP';
+  }
+}
+
+function changeQty(id, size, delta) {
+  const idx = cart.findIndex(i => i.id === id && i.size === size);
+  if (idx === -1) return;
+  cart[idx].qty += delta;
+  if (cart[idx].qty <= 0) cart.splice(idx, 1);
+  saveCart(); renderCart(); updateCartBadges();
+}
+
+function removeItem(id, size) {
+  cart = cart.filter(i => !(i.id === id && i.size === size));
+  saveCart(); renderCart(); updateCartBadges();
+}
+
+function addToCart(productId, size, name, price, img) {
+  const existing = cart.find(i => i.id === productId && i.size === size);
+  if (existing) { existing.qty++; }
+  else { cart.push({ id: productId, name, price, size, qty: 1, img }); }
+  saveCart(); renderCart(); updateCartBadges();
+  showToast('Added to cart: ' + name + ' (' + size + ')', 'success');
+}
+
+function renderProducts(filter) {
+  const grid = document.getElementById('products-grid');
+  const titleEl = document.getElementById('products-section-title');
+  grid.classList.add('fading');
+  titleEl.classList.add('fading');
+  setTimeout(() => {
+    titleEl.textContent = categoryTitles[filter] || 'Latest Drops';
+    const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+    grid.innerHTML = filtered.map(p => `
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img class="product-img primary" src="${p.img1}" alt="${p.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80'"/>
+          
+        </div>
+        <div class="product-info">
+          <div class="product-name">${p.name}</div>
+          <div class="product-price">${p.price.toLocaleString()} <span class="product-price-egp">EGP</span></div>
+          <div style="margin-top:1rem;">
+            <div style="font-size:0.65rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:0.5rem;">Select Size</div>
+            <div style="display:flex;gap:0.35rem;flex-wrap:wrap;" id="sizes-${p.id}">
+              ${['S','M','L','XL','XXL'].map(s => `<button class="size-btn" onclick="selectSize(${p.id},'${s}')" id="sz-${p.id}-${s}">${s}</button>`).join('')}
+            </div>
+          </div>
+          <button class="add-cart-btn" onclick="handleAddToCart(${p.id})">Add to Cart</button>
+        </div>
+      </div>
+    `).join('');
+    filtered.forEach(p => {
+      if (selectedSizes[p.id]) {
+        const btn = document.getElementById(`sz-${p.id}-${selectedSizes[p.id]}`);
+        if (btn) btn.className = 'size-btn selected';
+      }
+    });
+    grid.classList.remove('fading');
+    titleEl.classList.remove('fading');
+  }, 280);
+}
+
+function selectSize(productId, size) {
+  selectedSizes[productId] = size;
+  ['S','M','L','XL','XXL'].forEach(s => {
+    const btn = document.getElementById(`sz-${productId}-${s}`);
+    if (btn) btn.className = 'size-btn' + (s === size ? ' selected' : '');
+  });
+}
+
+function handleAddToCart(productId) {
+  const size = selectedSizes[productId];
+  if (!size) { showToast('Please select a size first.', 'error'); return; }
+  const p = products.find(x => x.id === productId);
+  if (!p) return;
+  addToCart(p.id, size, p.name, p.price, p.img1);
+}
+
+function filterProducts(cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  renderProducts(cat);
+}
+
+function openCart() {
+  document.getElementById('cart-overlay').classList.add('open');
+  document.getElementById('cart-drawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderCart();
+}
+
+function closeCart() {
+  document.getElementById('cart-overlay').classList.remove('open');
+  document.getElementById('cart-drawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('open'); }
+function scrollTo(selector) { const el = document.querySelector(selector); if (el) el.scrollIntoView({ behavior:'smooth', block:'start' }); }
+
+function showToast(msg, type = 'default') {
+  const container = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  container.appendChild(t);
+  setTimeout(() => { t.classList.add('hiding'); setTimeout(() => t.remove(), 400); }, 3000);
+}
+
+function handleFileUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const previewWrap = document.getElementById('file-preview-wrap');
+    const previewImg = document.getElementById('file-preview-img');
+    const previewName = document.getElementById('file-preview-name');
+    previewImg.src = ev.target.result;
+    previewName.textContent = '✓ ' + file.name;
+    previewWrap.classList.add('visible');
+  };
+  reader.readAsDataURL(file);
+  document.getElementById('upload-area').style.borderColor = 'var(--accent)';
+  document.getElementById('upload-area').style.background = 'rgba(200,169,110,0.04)';
+  showToast('Screenshot uploaded: ' + file.name, 'success');
+}
+
+function openModal(content, onOk) {
+  document.getElementById('modal-content').innerHTML = content;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('modal-ok').onclick = () => { closeModal(); onOk(); };
+}
+
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+
+function placeOrder() {
+  const name = document.getElementById('full-name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const depositNum = document.getElementById('deposit-number').value.trim();
+  if (cart.length === 0) { showToast('Your cart is empty.', 'error'); openCart(); return; }
+  if (!name) { showToast('Full name required.', 'error'); return; }
+  if (!phone) { showToast('Phone number required.', 'error'); return; }
+  if (!address) { showToast('Address required.', 'error'); return; }
+  if (!depositNum) { showToast('Deposit transfer number required.', 'error'); return; }
+  if (!selectedFile) { showToast('Please upload deposit screenshot.', 'error'); return; }
+  const sub = getCartTotal();
+  const grand = sub + 100;
+  const itemsText = cart.map(i => `• ${i.name} | Size: ${i.size} | Qty: ${i.qty} | ${(i.price * i.qty).toLocaleString()} EGP`).join('\n');
+  const waMsg = encodeURIComponent(
+    `🖤 BLACK OUT — New Order\n━━━━━━━━━━━━━━━━━━━━━━\n👤 Customer: ${name}\n📞 Phone: ${phone}\n📍 Address: ${address}\n💳 Deposit Transfer Number: ${depositNum}\n━━━━━━━━━━━━━━━━━━━━━━\n🛍 Ordered Items:\n${itemsText}\n━━━━━━━━━━━━━━━━━━━━━━\n💰 Subtotal: ${sub.toLocaleString()} EGP\n🚚 Shipping: 100 EGP\n✅ Grand Total: ${grand.toLocaleString()} EGP\n━━━━━━━━━━━━━━━━━━━━━━\n📎 Deposit Screenshot attached in this chat`
+  );
+  const modalText = `لإرسال الطلب بنجاح:<br/><br/>سيتم فتح واتساب الآن،<br/>برجاء إرسال رسالة البيانات التلقائية،<br/>ثم قم بإرفاق صورة تحويل المحفظة يدوياً<br/><strong>(المودعة على رقم 01147477039)</strong><br/>في الشات مباشرة لتأكيد الأوردر.`;
+  openModal(modalText, () => {
+    window.open(`https://wa.me/201273144003?text=${waMsg}`, '_blank');
+    showToast('Order sent via WhatsApp!', 'success');
+  });
+}
+
+function initScrollReveal() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+window.addEventListener('scroll', () => {
+  document.getElementById('header').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+window.addEventListener('load', () => {
+  renderProducts('all');
+  updateCartBadges();
+  renderCart();
+  renderOrderSummary();
+  setTimeout(() => {
+    const loader = document.getElementById('loader');
+    loader.style.opacity = '0';
+    loader.style.pointerEvents = 'none';
+    setTimeout(() => loader.remove(), 600);
+    initScrollReveal();
+  }, 2000);
+});
+</script>
+</body>
+</html>
